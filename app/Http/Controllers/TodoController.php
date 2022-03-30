@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Todo;
 use App\Models\User;
+use App\Models\Tag;
 
 class TodoController extends Controller
 {
@@ -31,21 +32,32 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request) // Store method should have a parmeter, that parameter should be validated
     {
-        // * Something is off here
-        $usersToFind = $request['assignTo'];
-        $foundUsers = User::find($usersToFind);
+        // ? Associate a single todo by a tag
+        $todo = Todo::create($request->validated());
+        return response()->json($todo);
 
-        if(!count($usersToFind) > count($foundUsers)){ // Match input with output
-            return response()->json('Some Items were not found');
-        }
-        $todo = Todo::create([
-            'title' => $request->validated(['title']),
-            'content' => $request->validated(['content']),
-        ]);
-        foreach($foundUsers as $user){
-            $user->todos()->attach($todo); // This is the magic
-        }
-        return response()->json('Todo creation is successful');
+
+
+
+
+
+
+
+        // * Something is off here
+        // $usersToFind = $request['assignTo'];
+        // $foundUsers = User::find($usersToFind);
+
+        // if(!count($usersToFind) > count($foundUsers)){ // Match input with output
+        //     return response()->json('Some Items were not found');
+        // }
+        // $todo = Todo::create([
+        //     'title' => $request->validated(['title']),
+        //     'content' => $request->validated(['content']),
+        // ]);
+        // foreach($foundUsers as $user){
+        //     $user->todos()->attach($todo); // This is the magic
+        // }
+        // return response()->json('Todo creation is successful');
     }
 
     /**

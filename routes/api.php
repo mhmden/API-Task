@@ -18,13 +18,13 @@ use App\Http\Controllers\TrashedTodoController;
 */
 
 // Todo [X] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
-// Todo [] todo tag -> for filtering. Todo:M ------------ 1: Tag 
+// Todo [X] todo tag -> for filtering. Todo:M ------------ 1: Tag 
 // Todo [] Todo Status Todo_Status ID. Todo:1 ------------- M:Status
 // Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes 
 
 
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/git sregister', 'register');
+    Route::post('/register', 'register');
     Route::post('/login', 'login');
     Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
@@ -35,7 +35,7 @@ Route::controller(AuthController::class)->group(function () {
     /
 */
 // Remember the URI does not matter. The Controller name is what does.
-Route::middleware([])->group(function () {
+Route::middleware([])->group(function () { // ? Middleware not enabled because of testing
     Route::apiResource('/todos', TodoController::class);
     Route::apiResource('/trashed/todos', TrashedTodoController::class)->only([
         'index', 'update', 'destroy'

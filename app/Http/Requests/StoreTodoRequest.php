@@ -26,7 +26,8 @@ class StoreTodoRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'assignTo' => 'required',
+            'tag_id' => 'required',
+            // 'assignTo' => 'required',
         ];
     }
 }

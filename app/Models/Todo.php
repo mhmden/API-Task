@@ -14,12 +14,15 @@ class Todo extends Model
     protected $fillable = [
         'title',
         'content',
+        'tag_id',
     ];
 
     public function users (){
-
         return $this->belongsToMany(User::class);
+    }
 
+    public function tag(){
+        return $this->belongsTo(Tag::class);
     }
 
 }
