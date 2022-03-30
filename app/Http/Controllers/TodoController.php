@@ -36,14 +36,6 @@ class TodoController extends Controller
         $todo = Todo::create($request->validated());
         return response()->json($todo);
 
-
-
-
-
-
-
-
-        // * Something is off here, You are right. Attach can take arrays. Re-think this
         // $usersToFind = array_unique($request['assignTo']);
         // $foundUsers = User::find($usersToFind)->count();
 
