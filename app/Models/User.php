@@ -47,7 +47,7 @@ class User extends Authenticatable
 
     public function todos(){
 
-        return $this->belongsToMany(Todo::class)->withTimestamps();
+        return $this->belongsToMany(Todo::class);
 
     }
     public function setPasswordAttribute($password){ // A model mutator that we want to hash the password prior to saving

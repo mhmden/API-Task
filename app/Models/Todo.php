@@ -15,10 +15,11 @@ class Todo extends Model
         'title',
         'content',
         'tag_id',
+        // 'assignTo',
     ];
 
     public function users (){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     public function tag(){

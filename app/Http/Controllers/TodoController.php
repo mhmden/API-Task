@@ -19,7 +19,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = Todo::all(['id', 'title', 'content', 'created_at']);
+        $todos = Todo::all();
         
         return ($todos->isEmpty()) ? response()->json('You have no todos') : response()->json($todos);
     }
@@ -43,21 +43,20 @@ class TodoController extends Controller
 
 
 
-        // * Something is off here
-        // $usersToFind = $request['assignTo'];
-        // $foundUsers = User::find($usersToFind);
+        // * Something is off here, You are right. Attach can take arrays. Re-think this
+        // $usersToFind = array_unique($request['assignTo']);
+        // $foundUsers = User::find($usersToFind)->count();
 
-        // if(!count($usersToFind) > count($foundUsers)){ // Match input with output
+        // if(!($foundUsers == count($usersToFind))){ 
         //     return response()->json('Some Items were not found');
         // }
         // $todo = Todo::create([
         //     'title' => $request->validated(['title']),
         //     'content' => $request->validated(['content']),
         // ]);
-        // foreach($foundUsers as $user){
-        //     $user->todos()->attach($todo); // This is the magic
-        // }
-        // return response()->json('Todo creation is successful');
+
+        // $todo->users()->attach($usersToFind);
+        return response()->json('Operation Succeded');
     }
 
     /**

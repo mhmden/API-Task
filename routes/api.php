@@ -19,8 +19,12 @@ use App\Http\Controllers\TrashedTodoController;
 
 // Todo [X] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
 // Todo [X] todo tag -> for filtering. Todo:M ------------ 1: Tag 
-// Todo [] Todo Status Todo_Status ID. Todo:1 ------------- M:Status
-// Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes 
+// Todo [X] Fix the attach method.
+// Todo [] Todo Status Todo_Status ID. Todo:M ------------- 1:Status
+// Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes
+// Todo [] CruddyFi Controllers
+
+
 
 
 Route::controller(AuthController::class)->group(function () {
@@ -41,4 +45,6 @@ Route::middleware([])->group(function () { // ? Middleware not enabled because o
         'index', 'update', 'destroy'
     ]);
     Route::apiResource('/tags', TagController::class)->only(['store', 'index', 'show']);
+
+    // CruddyFI The tasks. 
 });
