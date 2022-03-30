@@ -31,20 +31,20 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request) // Store method should have a parmeter, that parameter should be validated
     {
+        // * Something is off here
         $usersToFind = $request['assignTo'];
         $foundUsers = User::find($usersToFind);
 
         if(!count($usersToFind) > count($foundUsers)){ // Match input with output
-            return response()->json('Some Users don\'t exist in our database');
+            return response()->json('Some Items were not found');
         }
         $todo = Todo::create([
             'title' => $request->validated(['title']),
             'content' => $request->validated(['content']),
         ]);
         foreach($foundUsers as $user){
-            $user->todos()->attach($todo);
+            $user->todos()->attach($todo); // This is the magic
         }
-        dd(User::find(1)->todos()->get(['title', 'content']));
         return response()->json('Todo creation is successful');
     }
 

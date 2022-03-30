@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\TrashedTodoController;
 
@@ -16,16 +17,16 @@ use App\Http\Controllers\TrashedTodoController;
 |
 */
 
-// Todo [] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
+// Todo [X] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
 // Todo [] todo tag -> for filtering. Todo:M ------------ 1: Tag 
 // Todo [] Todo Status Todo_Status ID. Todo:1 ------------- M:Status
 // Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes 
 
 
 Route::controller(AuthController::class)->group(function () {
-    Route::post('register', 'register');
-    Route::post('login', 'login');
-    Route::post('logout', 'logout')->middleware(['auth:sanctum']);
+    Route::post('/git sregister', 'register');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
 
 
@@ -33,9 +34,11 @@ Route::controller(AuthController::class)->group(function () {
 /*
     /
 */
-Route::middleware(['auth:sanctum'])->group(function () {  
-    Route::apiResource('todos', TodoController::class);
-    Route::apiResource('trashed/todos', TrashedTodoController::class)->only([
+// Remember the URI does not matter. The Controller name is what does.
+Route::middleware([])->group(function () {
+    Route::apiResource('/todos', TodoController::class);
+    Route::apiResource('/trashed/todos', TrashedTodoController::class)->only([
         'index', 'update', 'destroy'
     ]);
+    Route::apiResource('/tags', TagController::class)->only(['store', 'index', 'show']);
 });
