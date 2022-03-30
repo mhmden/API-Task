@@ -26,6 +26,7 @@ class StoreTodoRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'assignTo' => 'required',
         ];
     }
 }

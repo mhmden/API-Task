@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTodoRequest;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Todo;
+use App\Models\User;
 
 class TodoController extends Controller
 {
@@ -30,12 +31,21 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request) // Store method should have a parmeter, that parameter should be validated
     {
-        Todo::create([
+        $usersToFind = $request['assignTo'];
+        $foundUsers = User::find($usersToFind);
+
+        if(!count($usersToFind) > count($foundUsers)){ // Match input with output
+            return response()->json('Some Users don\'t exist in our database');
+        }
+        $todo = Todo::create([
             'title' => $request->validated(['title']),
             'content' => $request->validated(['content']),
-            'user_id' => Auth::id(), // * This needs to change. 
         ]);
-        return response()->json('Todo Created');
+        foreach($foundUsers as $user){
+            $user->todos()->attach($todo);
+        }
+        dd(User::find(1)->todos()->get(['title', 'content']));
+        return response()->json('Todo creation is successful');
     }
 
     /**

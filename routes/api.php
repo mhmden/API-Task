@@ -16,11 +16,10 @@ use App\Http\Controllers\TrashedTodoController;
 |
 */
 
-
-// Todo [] todo tag -> for filtering.
-// Todo [] Assign Todo to any users
-// Todo [] Todo Status Todo_Status ID
-// Todo [] Todo Status History
+// Todo [] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
+// Todo [] todo tag -> for filtering. Todo:M ------------ 1: Tag 
+// Todo [] Todo Status Todo_Status ID. Todo:1 ------------- M:Status
+// Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes 
 
 
 Route::controller(AuthController::class)->group(function () {
@@ -30,7 +29,10 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 
-// Extend this api resource I guess. 
+// Not sure if this can be cruddy. Let's envision the routes.
+/*
+    /
+*/
 Route::middleware(['auth:sanctum'])->group(function () {  
     Route::apiResource('todos', TodoController::class);
     Route::apiResource('trashed/todos', TrashedTodoController::class)->only([
