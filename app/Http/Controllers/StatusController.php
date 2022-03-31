@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TagRequest;
+use App\Http\Requests\CreateStatusRequest;
+use App\Models\Status;
 use Illuminate\Http\Request;
-use App\Models\Tag;
-use App\Models\Todo;
 
-class TagController extends Controller
+class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() // * Show Tag with underlying Todo
+    public function index()
     {
-
-        $tags = Tag::with('todos')->get(['id', 'name']);
-        return response()->json($tags);
+        $listOfStatuses = Status::all(['id', 'name']);
+        return ($listOfStatuses->isEmpty()) ? response()->json('No Status Created'): response()->json($listOfStatuses);
     }
 
     /**
@@ -27,32 +25,31 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TagRequest $request)
+    public function store(CreateStatusRequest $request)
     {
-        $tag = Tag::create($request->validated());
-        return response()->json($tag);
+        $status  = Status::create($request->validated());
+        return response()->json($status);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function show(Tag $tag) // Todo [] Show Method 
-    {
-        $tag = Tag::with('todos')->get();
-        return response()->json($tag);
+    public function show(Status $status)
+    { 
+        return response()->json($status->todos);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, Status $status)
     {
         //
     }
@@ -60,10 +57,10 @@ class TagController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Status $status)
     {
         //
     }

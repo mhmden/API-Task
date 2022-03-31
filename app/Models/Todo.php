@@ -14,16 +14,21 @@ class Todo extends Model
     protected $fillable = [
         'title',
         'content',
-        'tag_id',
-        // 'assignTo',
+        'todo_tag',
+        'assign_to',
+        'status_id',
     ];
 
-    public function users (){
+    public function users (){ // M:N 
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
-    public function tag(){
-        return $this->belongsTo(Tag::class);
+    public function tags(){ // M:N
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function status(){ // 1:N The todo will have the foriegn key as is in the current system
+        return $this->belongsTo(Status::class);
     }
 
 }

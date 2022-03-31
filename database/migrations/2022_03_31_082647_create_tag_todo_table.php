@@ -1,10 +1,8 @@
 <?php
 
-use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Status;
 
 return new class extends Migration
 {
@@ -15,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('todos', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->foreignIdFor(Status::class)->nullable();
+        Schema::create('tag_todo', function (Blueprint $table) {
+            $table->foreignId('tag_id')->constrained();
+            $table->foreignId('todo_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('todos');
+        Schema::dropIfExists('tag_todo');
     }
 };

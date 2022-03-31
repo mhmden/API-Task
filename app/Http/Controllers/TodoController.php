@@ -7,8 +7,7 @@ use App\Http\Requests\UpdateTodoRequest;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Todo;
-use App\Models\User;
-use App\Models\Tag;
+
 
 class TodoController extends Controller
 {
@@ -19,9 +18,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = Todo::all();
-        
-        return ($todos->isEmpty()) ? response()->json('You have no todos') : response()->json($todos);
+        $todos = Todo::all()->simplePaginate(3); // Todo -> Paginate This stuff 
+        return response()->json($todos);
     }
 
     /**
@@ -30,25 +28,14 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTodoRequest $request) // Store method should have a parmeter, that parameter should be validated
-    {
-        // ? Associate a single todo by a tag
-        $todo = Todo::create($request->validated());
-        return response()->json($todo);
+    public function store(StoreTodoRequest $request)
+    {  
+        
+        $todo = Todo::create($request->safe()->except(['assign_to', 'tag_id'])); 
+        $todo->users()->attach($request['assign_to']);
+        $todo->tags()->attach($request['tag_id']);
 
-        // $usersToFind = array_unique($request['assignTo']);
-        // $foundUsers = User::find($usersToFind)->count();
-
-        // if(!($foundUsers == count($usersToFind))){ 
-        //     return response()->json('Some Items were not found');
-        // }
-        // $todo = Todo::create([
-        //     'title' => $request->validated(['title']),
-        //     'content' => $request->validated(['content']),
-        // ]);
-
-        // $todo->users()->attach($usersToFind);
-        return response()->json('Operation Succeded');
+        return response()->json($todo, 200);
     }
 
     /**
@@ -57,7 +44,7 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Todo $todo) // Route Model Binding Here <- Show todo via ID
+    public function show(Todo $todo)
     {
         return response()->json($todo);
     }
@@ -69,12 +56,11 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTodoRequest $request, Todo $todo) // Update a specific todo PATCH
+    public function update(UpdateTodoRequest $request, Todo $todo)
     {
-        $todo->update([
-            'title' => $request->validated('title'),
-            'content' => $request->validated('content'),
-        ]);
+        $todo->update($request->safe()->except(['assign_to', 'tag_id']));
+        $todo->users()->sync($request['assign_to']);
+        $todo->tags()->sync($request['tag_id']);
         return response()->json($todo);
     }
 
@@ -84,9 +70,11 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo) // Delete Todo DELETE request
+    public function destroy(Todo $todo)
     {
-        $todo->delete(); // soft
+        $todo->users()->detach();
+        $todo->tags()->detach();
+        $todo->delete();
         return response()->json('Todo was deleted');
     }
 }

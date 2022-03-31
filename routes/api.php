@@ -5,6 +5,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\TrashedTodoController;
+use App\Http\Controllers\StatusController;
+
+use App\Models\User;
+use App\Models\Todo;
+use App\Models\Status;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,13 +23,12 @@ use App\Http\Controllers\TrashedTodoController;
 */
 
 // Todo [X] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
-// Todo [X] todo tag -> for filtering. Todo:M ------------ 1: Tag 
+// Todo [X] todo tag -> for filtering. Todo:M ------------ M: Tag 
 // Todo [X] Fix the attach method.
-// Todo [] Todo Status Todo_Status ID. Todo:M ------------- 1:Status
+// Todo [X] Todo Status Todo_Status ID. Todo:M ------------- 1:Status
+
+
 // Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes
-// Todo [] CruddyFi Controllers
-
-
 
 
 Route::controller(AuthController::class)->group(function () {
@@ -33,18 +37,12 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
 
-
-// Not sure if this can be cruddy. Let's envision the routes.
-/*
-    /
-*/
 // Remember the URI does not matter. The Controller name is what does.
 Route::middleware([])->group(function () { // ? Middleware not enabled because of testing
     Route::apiResource('/todos', TodoController::class);
-    Route::apiResource('/trashed/todos', TrashedTodoController::class)->only([
+    Route::apiResource('/tags', TagController::class)->only(['index', 'store', 'show']);
+    Route::apiResource('/status', StatusController::class)->only(['index', 'store', 'show']);
+    Route::apiResource('/trashed', TrashedTodoController::class)->only([
         'index', 'update', 'destroy'
     ]);
-    Route::apiResource('/tags', TagController::class)->only(['store', 'index', 'show']);
-
-    // CruddyFI The tasks. 
 });
