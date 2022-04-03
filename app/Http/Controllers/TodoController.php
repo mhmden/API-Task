@@ -13,12 +13,12 @@ class TodoController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     *  
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $todos = Todo::all()->simplePaginate(3); // Todo -> Paginate This stuff 
+        $todos = Todo::simplePaginate(10);
         return response()->json($todos);
     }
 
@@ -30,12 +30,17 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request)
     {  
-        
         $todo = Todo::create($request->safe()->except(['assign_to', 'tag_id'])); 
         $todo->users()->attach($request['assign_to']);
         $todo->tags()->attach($request['tag_id']);
-
-        return response()->json($todo, 200);
+        return response()->json([
+            'id' => $todo->id,
+            'title' => $todo->title,
+            'content' => $todo->content,
+            'tags' => $todo->tags->pluck('name'),
+            'status' => $todo->status->name,
+            'users' => $todo->users->pluck('id', 'name'),
+        ], 200);
     }
 
     /**
@@ -46,7 +51,15 @@ class TodoController extends Controller
      */
     public function show(Todo $todo)
     {
-        return response()->json($todo);
+        // return response()->json( $todo::with('status', 'tags')->get(['id', 'title'])   , 200);
+        return response()->json([
+            'id' => $todo->id,
+            'title' => $todo->title,
+            'content' => $todo->content,
+            'tags' => $todo->tags->pluck('name'),
+            'status' => $todo->status->id,
+            'users' => $todo->users->pluck('id', 'name'),
+        ], 200);
     }
 
     /**
@@ -61,7 +74,15 @@ class TodoController extends Controller
         $todo->update($request->safe()->except(['assign_to', 'tag_id']));
         $todo->users()->sync($request['assign_to']);
         $todo->tags()->sync($request['tag_id']);
-        return response()->json($todo);
+
+        return response()->json([
+            'id' => $todo->id,
+            'title' => $todo->title,
+            'content' => $todo->content,
+            'tags' => $todo->tags->pluck('name'),
+            'status' => $todo->status->id,
+            'users' => $todo->users->pluck('id', 'name'),
+        ], 200);
     }
 
     /**

@@ -15,8 +15,8 @@ class StatusController extends Controller
      */
     public function index()
     {
-        $listOfStatuses = Status::all(['id', 'name']);
-        return ($listOfStatuses->isEmpty()) ? response()->json('No Status Created'): response()->json($listOfStatuses);
+        $listOfStatuses = Status::with('todos')->get(['id', 'name']);
+        return ($listOfStatuses->isEmpty()) ? response()->json(400): response()->json($listOfStatuses);
     }
 
     /**
@@ -39,7 +39,7 @@ class StatusController extends Controller
      */
     public function show(Status $status)
     { 
-        return response()->json($status->todos);
+        return response()->json($status::with('todos')->get(['id', 'name']));
     }
 
     /**

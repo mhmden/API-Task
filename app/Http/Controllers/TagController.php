@@ -17,7 +17,7 @@ class TagController extends Controller
     public function index() // * Show Tag with underlying Todo
     {
 
-        $tags = Tag::with('todos')->get(['id', 'name']);
+        $tags = Tag::with('todos')->get();
         return response()->json($tags);
     }
 

@@ -31,4 +31,8 @@ class Todo extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function statusHistory() {
+        return $this->hasMany(StatusHistory::class);
+    }
+
 }

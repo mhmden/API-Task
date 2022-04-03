@@ -26,8 +26,6 @@ use App\Models\Status;
 // Todo [X] todo tag -> for filtering. Todo:M ------------ M: Tag 
 // Todo [X] Fix the attach method.
 // Todo [X] Todo Status Todo_Status ID. Todo:M ------------- 1:Status
-
-
 // Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes
 
 
@@ -37,12 +35,12 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
 
-// Remember the URI does not matter. The Controller name is what does.
-Route::middleware([])->group(function () { // ? Middleware not enabled because of testing
+Route::middleware([])->group(function () { 
     Route::apiResource('/todos', TodoController::class);
     Route::apiResource('/tags', TagController::class)->only(['index', 'store', 'show']);
     Route::apiResource('/status', StatusController::class)->only(['index', 'store', 'show']);
-    Route::apiResource('/trashed', TrashedTodoController::class)->only([
-        'index', 'update', 'destroy'
-    ]);
+    Route::apiResource('/trashed', TrashedTodoController::class)->only(['index', 'update', 'destroy']);
 });
+
+// Todo [] Macro for Responses, and Error Codes
+// Todo [] Console Output
