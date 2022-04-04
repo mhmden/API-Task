@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateStatusRequest;
+use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,9 @@ class StatusController extends Controller
      */
     public function index()
     {
-        $listOfStatuses = Status::with('todos')->get(['id', 'name']);
-        return ($listOfStatuses->isEmpty()) ? response()->json(400): response()->json($listOfStatuses);
+
+        return StatusResource::collection(Status::all()); // this is specifying what we pass inside the collection
+        
     }
 
     /**
@@ -28,7 +30,8 @@ class StatusController extends Controller
     public function store(CreateStatusRequest $request)
     {
         $status  = Status::create($request->validated());
-        return response()->json($status);
+        return new StatusResource($status);
+        // return response()->json($status);
     }
 
     /**
@@ -39,7 +42,8 @@ class StatusController extends Controller
      */
     public function show(Status $status)
     { 
-        return response()->json($status::with('todos')->get(['id', 'name']));
+        return new StatusResource($status);
+        // return response()->json($status::with('todos')->get(['id', 'name']));
     }
 
     /**

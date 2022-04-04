@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTodoRequest;
 use App\Http\Requests\UpdateTodoRequest;
+use App\Http\Resources\TodoResource;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Todo;
@@ -18,8 +19,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = Todo::simplePaginate(10);
-        return response()->json($todos);
+        $todos = Todo::with(['tags', 'users', 'status']);
+        return TodoResource::collection($todos->simplePaginate(10));
     }
 
     /**
@@ -33,14 +34,9 @@ class TodoController extends Controller
         $todo = Todo::create($request->safe()->except(['assign_to', 'tag_id'])); 
         $todo->users()->attach($request['assign_to']);
         $todo->tags()->attach($request['tag_id']);
-        return response()->json([
-            'id' => $todo->id,
-            'title' => $todo->title,
-            'content' => $todo->content,
-            'tags' => $todo->tags->pluck('name'),
-            'status' => $todo->status->name,
-            'users' => $todo->users->pluck('id', 'name'),
-        ], 200);
+        return new TodoResource($todo->load('users', 'tags', 'status')); 
+
+        // * The response does not show users and tags due as they are not presisting in this case. They are used for relationship purposes only
     }
 
     /**
@@ -51,15 +47,7 @@ class TodoController extends Controller
      */
     public function show(Todo $todo)
     {
-        // return response()->json( $todo::with('status', 'tags')->get(['id', 'title'])   , 200);
-        return response()->json([
-            'id' => $todo->id,
-            'title' => $todo->title,
-            'content' => $todo->content,
-            'tags' => $todo->tags->pluck('name'),
-            'status' => $todo->status->id,
-            'users' => $todo->users->pluck('id', 'name'),
-        ], 200);
+        return new TodoResource($todo->load('users', 'tags', 'status'));
     }
 
     /**
@@ -74,15 +62,7 @@ class TodoController extends Controller
         $todo->update($request->safe()->except(['assign_to', 'tag_id']));
         $todo->users()->sync($request['assign_to']);
         $todo->tags()->sync($request['tag_id']);
-
-        return response()->json([
-            'id' => $todo->id,
-            'title' => $todo->title,
-            'content' => $todo->content,
-            'tags' => $todo->tags->pluck('name'),
-            'status' => $todo->status->id,
-            'users' => $todo->users->pluck('id', 'name'),
-        ], 200);
+        return new TodoResource($todo->load('users', 'tags', 'status'));
     }
 
     /**
@@ -96,6 +76,5 @@ class TodoController extends Controller
         $todo->users()->detach();
         $todo->tags()->detach();
         $todo->delete();
-        return response()->json('Todo was deleted');
     }
 }

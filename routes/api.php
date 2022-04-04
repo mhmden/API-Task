@@ -26,7 +26,7 @@ use App\Models\Status;
 // Todo [X] todo tag -> for filtering. Todo:M ------------ M: Tag 
 // Todo [X] Fix the attach method.
 // Todo [X] Todo Status Todo_Status ID. Todo:M ------------- 1:Status
-// Todo [] Todo Status  changes. Todo: 1 ------------------ M:Changes
+// Todo [X] Todo Status  changes. Todo: 1 ------------------ M:Changes
 
 
 Route::controller(AuthController::class)->group(function () {
@@ -35,12 +35,23 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
 
-Route::middleware([])->group(function () { 
+Route::middleware([])->group(function () {
+    /** 
+     * TODO response with message and http code
+     * TODO remove any redundant resources|collections
+    */
     Route::apiResource('/todos', TodoController::class);
-    Route::apiResource('/tags', TagController::class)->only(['index', 'store', 'show']);
-    Route::apiResource('/status', StatusController::class)->only(['index', 'store', 'show']);
+    Route::apiResource('/tags', TagController::class)->only(['index', 'store', 'show']); // TODO complete the resource
+    Route::apiResource('/status', StatusController::class)->only(['index', 'store', 'show']); // TODO complete the resource
     Route::apiResource('/trashed', TrashedTodoController::class)->only(['index', 'update', 'destroy']);
 });
+
+Route::get('/', function () { // Testing Only
+
+
+
+});
+
 
 // Todo [] Macro for Responses, and Error Codes
 // Todo [] Console Output

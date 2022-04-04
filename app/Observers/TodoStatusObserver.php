@@ -5,7 +5,7 @@ namespace App\Observers;
 use App\Models\Todo;
 use App\Models\TodoStatusHistory;
 
-class StatusHistoryObserver // Todo
+class TodoStatusObserver
 {
     /**
      * Handle the Todo "created" event.
@@ -15,6 +15,7 @@ class StatusHistoryObserver // Todo
      */
     public function created(Todo $todo)
     {
+        //
         TodoStatusHistory::create([
             'todo_id' => $todo->id,
             'status_id' => $todo->status->id,
@@ -29,7 +30,8 @@ class StatusHistoryObserver // Todo
      */
     public function updated(Todo $todo)
     {
-        if($todo->isDirty('status_id')){
+        //
+        if ($todo->wasChanged('status_id')) { // TODO Experiment with Different Methods for this sort of work.
             TodoStatusHistory::create([
                 'todo_id' => $todo->id, // This is there because it is a fillable
                 'status_id' => $todo->status->id,
@@ -68,22 +70,5 @@ class StatusHistoryObserver // Todo
     public function forceDeleted(Todo $todo)
     {
         //
-    }
-
-    public function saved(Todo $todo)
-    {
-        // dd('saved');
-        // TodoStatusHistory::create([
-        //     'todos_id' => $todo->id,
-        //     'status_id' => $todo->status->id,
-        // ]);
-    }
-
-    public function saving(Todo $todo)
-    {
-        // dd('saving');
-        // // TodoStatusHistory::create([
-
-        // // ]);
     }
 }

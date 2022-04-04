@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TagRequest;
+use App\Http\Resources\TagResource;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\Todo;
@@ -16,9 +17,11 @@ class TagController extends Controller
      */
     public function index() // * Show Tag with underlying Todo
     {
+        // $tag = Tag::with('todos');
+        return TagResource::collection(Tag::all()); // This needs to be paginated
 
-        $tags = Tag::with('todos')->get();
-        return response()->json($tags);
+        // $tags = Tag::with('todos')->get();
+        // return response()->json($tags);
     }
 
     /**
@@ -30,7 +33,9 @@ class TagController extends Controller
     public function store(TagRequest $request)
     {
         $tag = Tag::create($request->validated());
-        return response()->json($tag);
+        // view the created tag
+        return new TagResource($tag);
+        // return response()->json($tag);
     }
 
     /**
@@ -41,8 +46,9 @@ class TagController extends Controller
      */
     public function show(Tag $tag) // Todo [] Show Method 
     {
-        $tag = Tag::with('todos')->get();
-        return response()->json($tag);
+        return new TagResource($tag);
+        // $tag = Tag::with('todos')->get();
+        // return response()->json($tag);
     }
 
     /**
