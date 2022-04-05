@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TagRequest;
-use App\Http\Resources\TagResource;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\Todo;
@@ -15,13 +14,10 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() // * Show Tag with underlying Todo
+    public function index()
     {
-        // $tag = Tag::with('todos');
-        return TagResource::collection(Tag::all()); // This needs to be paginated
-
-        // $tags = Tag::with('todos')->get();
-        // return response()->json($tags);
+        $tags = Tag::select('id', 'name')->simplePaginate(10);
+        return response()->json($tags, 200);
     }
 
     /**
@@ -32,10 +28,8 @@ class TagController extends Controller
      */
     public function store(TagRequest $request)
     {
-        $tag = Tag::create($request->validated());
-        // view the created tag
-        return new TagResource($tag);
-        // return response()->json($tag);
+        Tag::create($request->validated());
+        return response()->noContent(201);
     }
 
     /**
@@ -46,9 +40,10 @@ class TagController extends Controller
      */
     public function show(Tag $tag) // Todo [] Show Method 
     {
-        return new TagResource($tag);
-        // $tag = Tag::with('todos')->get();
-        // return response()->json($tag);
+        return response()->json([
+            'tag id' => $tag->id,
+            'tag name' => $tag->name,
+        ], 200);
     }
 
     /**
@@ -58,9 +53,11 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(TagRequest $request, Tag $tag)  // 201
     {
-        //
+        // Update Tag information -> Create requests
+        $tag->update($request->validated());
+        return response()->noContent(204);
     }
 
     /**
@@ -69,8 +66,9 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
-        //
+        $tag->delete();
+        return response()->noContent(204);
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('todo_status_histories', function (Blueprint $table) {
-            $table->id();
+            $table->id(); // * Ask about this
             $table->foreignIdFor(Todo::class);
             $table->foreignIdFor(Status::class);
             $table->timestamps();

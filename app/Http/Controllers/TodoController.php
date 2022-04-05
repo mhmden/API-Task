@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTodoRequest;
-use App\Http\Requests\UpdateTodoRequest;
+use App\Http\Requests\TodoRequest;
 use App\Http\Resources\TodoResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,15 +11,16 @@ use App\Models\Todo;
 
 class TodoController extends Controller
 {
+    // TODO [X] find the proper http codes for: created, updated, deleted
     /**
      * Display a listing of the resource.
      *  
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index() // ? 200
     {
-        $todos = Todo::with(['tags', 'users', 'status']);
-        return TodoResource::collection($todos->simplePaginate(10));
+        $todos = Todo::with(['tags', 'users', 'status'])->simplePaginate(10);
+        return TodoResource::collection($todos)->response()->setStatusCode(200); // Done Automatically in Insomnia
     }
 
     /**
@@ -29,14 +29,12 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTodoRequest $request)
-    {  
-        $todo = Todo::create($request->safe()->except(['assign_to', 'tag_id'])); 
+    public function store(TodoRequest $request) // ?  201
+    {
+        $todo = Todo::create($request->validated());
         $todo->users()->attach($request['assign_to']);
         $todo->tags()->attach($request['tag_id']);
-        return new TodoResource($todo->load('users', 'tags', 'status')); 
-
-        // * The response does not show users and tags due as they are not presisting in this case. They are used for relationship purposes only
+        return response()->noContent(201);
     }
 
     /**
@@ -47,7 +45,7 @@ class TodoController extends Controller
      */
     public function show(Todo $todo)
     {
-        return new TodoResource($todo->load('users', 'tags', 'status'));
+        return (new TodoResource($todo->load('users', 'tags', 'status')))->response()->setStatusCode(200);
     }
 
     /**
@@ -57,12 +55,12 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTodoRequest $request, Todo $todo)
+    public function update(TodoRequest $request, Todo $todo) // ? 204
     {
-        $todo->update($request->safe()->except(['assign_to', 'tag_id']));
+        $todo->update($request->validated());
         $todo->users()->sync($request['assign_to']);
         $todo->tags()->sync($request['tag_id']);
-        return new TodoResource($todo->load('users', 'tags', 'status'));
+        return response()->noContent(204);
     }
 
     /**
@@ -71,10 +69,12 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo)
+    public function destroy(Todo $todo) // ? 202 (If you want to include the deleted item in the response) / 204
     {
+        // TODO softdelete for these pivots
         $todo->users()->detach();
         $todo->tags()->detach();
         $todo->delete();
+        return response()->noContent(204);
     }
 }

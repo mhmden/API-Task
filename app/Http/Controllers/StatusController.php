@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateStatusRequest;
-use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use App\Http\Requests\StatusRequest;
 
 class StatusController extends Controller
 {
@@ -16,8 +15,8 @@ class StatusController extends Controller
      */
     public function index()
     {
-
-        return StatusResource::collection(Status::all()); // this is specifying what we pass inside the collection
+        $statuses = Status::select('id', 'name')->simplePaginate(10);
+        return response()->json($statuses, 200);
         
     }
 
@@ -27,11 +26,10 @@ class StatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateStatusRequest $request)
+    public function store(StatusRequest $request)
     {
-        $status  = Status::create($request->validated());
-        return new StatusResource($status);
-        // return response()->json($status);
+        Status::create($request->validated());
+        return response()->noContent(201);
     }
 
     /**
@@ -42,8 +40,10 @@ class StatusController extends Controller
      */
     public function show(Status $status)
     { 
-        return new StatusResource($status);
-        // return response()->json($status::with('todos')->get(['id', 'name']));
+        return response()->json([
+            'status id' => $status->id,
+            'status name' => $status->name,
+        ], 200);
     }
 
     /**
@@ -53,9 +53,10 @@ class StatusController extends Controller
      * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Status $status)
+    public function update(StatusRequest $request, Status $status)
     {
-        //
+        $status->update($request->validated());
+        return response()->noContent(204);
     }
 
     /**
@@ -66,6 +67,7 @@ class StatusController extends Controller
      */
     public function destroy(Status $status)
     {
-        //
+        $status->delete();
+        return response()->noContent(204);
     }
 }

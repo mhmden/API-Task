@@ -1,16 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\TrashedTodoController;
 use App\Http\Controllers\StatusController;
-
-use App\Models\User;
-use App\Models\Todo;
-use App\Models\Status;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,13 +18,6 @@ use App\Models\Status;
 |
 */
 
-// Todo [X] Todo / User Many to Many -> Attach a single todo to multiple users. Basically, the body from this point on will be json
-// Todo [X] todo tag -> for filtering. Todo:M ------------ M: Tag 
-// Todo [X] Fix the attach method.
-// Todo [X] Todo Status Todo_Status ID. Todo:M ------------- 1:Status
-// Todo [X] Todo Status  changes. Todo: 1 ------------------ M:Changes
-
-
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
@@ -37,21 +26,25 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware([])->group(function () {
     /** 
-     * TODO response with message and http code
+     * TODO response with message and http code [X] For TodoController Only 
      * TODO remove any redundant resources|collections
     */
-    Route::apiResource('/todos', TodoController::class);
-    Route::apiResource('/tags', TagController::class)->only(['index', 'store', 'show']); // TODO complete the resource
-    Route::apiResource('/status', StatusController::class)->only(['index', 'store', 'show']); // TODO complete the resource
-    Route::apiResource('/trashed', TrashedTodoController::class)->only(['index', 'update', 'destroy']);
-});
 
-Route::get('/', function () { // Testing Only
-
-
-
+    Route::apiResources([
+        '/todos' => TodoController::class,
+        '/tags' => TagController::class,
+        '/status' => StatusController::class,
+    ]);
+    Route::apiResource('/trashed', TrashedTodoController::class)->except('store'); // No use for store method
 });
 
 
-// Todo [] Macro for Responses, and Error Codes
+/**
+ * * Status Codes are as follows:
+ * ? - Index / Show -> 200
+ * ? - Store 201
+ * ? - Update / Delete 204
+ */
+
+ // Todo [] Macro for Responses, and Error Codes
 // Todo [] Console Output

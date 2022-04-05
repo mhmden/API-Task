@@ -14,9 +14,12 @@ class Todo extends Model
     protected $fillable = [
         'title',
         'content',
-        'todo_tag',
-        'assign_to',
-        'status_id',
+        'status_id'
+    ];
+
+    protected $casts = [
+        'todo_tag' => 'array',
+        'assign_to' => 'array',
     ];
 
     public function users (){ // M:N 

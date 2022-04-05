@@ -14,8 +14,8 @@ class TrashedTodoController extends Controller
      */
     public function index()
     {
-        $trashed = Todo::onlyTrashed()->get();
-        return response()->json($trashed);
+        $trashed = Todo::onlyTrashed()->get(['id', 'title', 'content']);
+        return response()->json($trashed, 200);
     }
 
     /**
@@ -37,7 +37,8 @@ class TrashedTodoController extends Controller
      */
     public function show($id) // Not required
     {
-
+        $todo = Todo::onlyTrashed()->find($id);
+        return response()->json($todo, 200);
     }
 
     /**
@@ -50,7 +51,7 @@ class TrashedTodoController extends Controller
     public function update(Request $request, $id)
     {
         Todo::onlyTrashed()->find($id)->restore();
-        return response()->json('Item has been restored');
+        return response()->noContent(204);
     }
 
     /**
@@ -62,6 +63,6 @@ class TrashedTodoController extends Controller
     public function destroy($id)
     {
         Todo::onlyTrashed()->find($id)->forceDelete();
-        return response()->json('Item has been deleted');
+        return response()->noContent(204);
     }
 }
