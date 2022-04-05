@@ -23,11 +23,15 @@ class Todo extends Model
     ];
 
     public function users (){ // M:N 
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class)
+                    ->whereNull('todo_user.deleted_at')
+                    ->withTimestamps();
     }
 
     public function tags(){ // M:N
-        return $this->belongsToMany(Tag::class)->withTimestamps();
+        return $this->belongsToMany(Tag::class)
+                    ->whereNull('tag_todo.deleted_at')
+                    ->withTimestamps();
     }
 
     public function status(){ // 1:N The todo will have the foriegn key as is in the current system

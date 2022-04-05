@@ -26,9 +26,9 @@ class TodoRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'status_id' => 'required',
-            'assign_to' => 'required|exists:users,id',
-            'tag_id' => 'required|exists:tags,id',
+            'status_id' => 'required|exists:statuses,id',
+            'assign_to' => 'required|array|exists:users,id',
+            'tag_id' => 'required|array|exists:tags,id',
             // TODO [X] validate assign_to and tag_id
         ];
     }

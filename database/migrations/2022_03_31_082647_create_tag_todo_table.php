@@ -14,9 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tag_todo', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('tag_id')->constrained();
             $table->foreignId('todo_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

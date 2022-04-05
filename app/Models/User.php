@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,11 +48,15 @@ class User extends Authenticatable
 
     public function todos(){
 
-        return $this->belongsToMany(Todo::class);
+        return $this->belongsToMany(Todo::class)->withTimestamps();
 
     }
-    public function setPasswordAttribute($password){ // A model mutator that we want to hash the password prior to saving
-        $this->attributes['password'] = Hash::make($password);
+
+    protected function password(): Attribute
+    { // A model mutator that we want to hash the password prior to saving
+        return Attribute::make(
+            set: fn ($value) => Hash::make($value),
+        );
     }
 
 }

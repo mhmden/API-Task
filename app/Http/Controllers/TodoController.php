@@ -7,7 +7,7 @@ use App\Http\Resources\TodoResource;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Todo;
-
+use Carbon\Carbon;
 
 class TodoController extends Controller
 {
@@ -17,9 +17,10 @@ class TodoController extends Controller
      *  
      * @return \Illuminate\Http\Response
      */
-    public function index() // ? 200
+    public function index() // TODO [] Re-Evaluate This stuff
     {
-        $todos = Todo::with(['tags', 'users', 'status'])->simplePaginate(10);
+        $todos = Todo::select(['id', 'title', 'content', 'status_id'])->with(['tags:id,name', 'users:id,name', 'status:id,name'])->simplePaginate(10);
+        return $todos;
         return TodoResource::collection($todos)->response()->setStatusCode(200); // Done Automatically in Insomnia
     }
 
@@ -29,7 +30,7 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodoRequest $request) // ?  201
+    public function store(TodoRequest $request)
     {
         $todo = Todo::create($request->validated());
         $todo->users()->attach($request['assign_to']);
@@ -55,7 +56,7 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TodoRequest $request, Todo $todo) // ? 204
+    public function update(TodoRequest $request, Todo $todo)
     {
         $todo->update($request->validated());
         $todo->users()->sync($request['assign_to']);
@@ -69,12 +70,16 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo) // ? 202 (If you want to include the deleted item in the response) / 204
+    public function destroy(Todo $todo)
     {
-        // TODO softdelete for these pivots
-        $todo->users()->detach();
-        $todo->tags()->detach();
+        $todo->users()->update([
+            'todo_user.deleted_at' => now(),
+        ]);
+        $todo->tags()->update([
+            'tag_todo.deleted_at' => now(),
+        ]);
         $todo->delete();
+
         return response()->noContent(204);
     }
 }
