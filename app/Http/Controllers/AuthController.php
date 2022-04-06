@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\UserRegisterRequest;
-use App\Http\Requests\UserLoginRequest;
-
 use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Hash;
-// use NumberFormatter;
+use App\Http\Requests\UserLoginRequest;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use App\Http\Requests\UserRegisterRequest;
+use App\Notifications\PasswordResetNotification;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 
@@ -39,6 +42,45 @@ class AuthController extends Controller
     {
         $request->user()->tokens()->delete();
         return response()->json('You have been logged out!');
+    }
+
+    public function recover(Request $request) 
+    {
+        $request->validate(['email' => 'required|email|exists:users,email']);
+        Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return response()->noContent(200);
+    }
+
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => $password
+                ])->setRememberToken(Str::random(60));
+     
+                $user->save();
+                $user->notify(new PasswordResetNotification());
+                $user->tokens()->delete();
+     
+                event(new PasswordReset($user));
+            }
+        );
+        if (!$status == Password::PASSWORD_RESET){
+            return response()->noContent(500);
+        }
+        return response()->noContent(200);
+        
     }
 }
 

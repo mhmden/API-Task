@@ -21,13 +21,16 @@ use App\Http\Controllers\StatusController;
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
+    Route::post('/forgot-password', 'recover');
+    Route::post('/reset-password', 'reset');
     Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
 
 Route::middleware([])->group(function () {
     /** 
-     * TODO response with message and http code [X] For TodoController Only 
-     * TODO remove any redundant resources|collections
+     * Todo [] Users can be activated or deactivated
+     * Todo [X] Password Reset / Forgot Password for users. (This means Authenticated and Unauthenticated)
+     * Todo [X] Password Reset Sends a notification to the user. Via Email?
     */
 
     Route::apiResources([
@@ -37,14 +40,15 @@ Route::middleware([])->group(function () {
     ]);
     Route::apiResource('/trashed', TrashedTodoController::class)->except('store'); // No use for store method
 });
+// Todo [] Macro for Responses, and Error Codes
+// Todo [] Console Output
 
 
 /**
- * * Status Codes are as follows:
- * ? - Index / Show -> 200
- * ? - Store 201
- * ? - Update / Delete 204
+ *  
+ *  
+ * 
+ * 
+ * 
+ * 
  */
-
- // Todo [] Macro for Responses, and Error Codes
-// Todo [] Console Output
