@@ -7,7 +7,6 @@ use App\Http\Resources\TodoResource;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Todo;
-use Carbon\Carbon;
 
 class TodoController extends Controller
 {
@@ -19,6 +18,7 @@ class TodoController extends Controller
      */
     public function index() // TODO [] Re-Evaluate This stuff
     {
+
         $todos = Todo::select(['id', 'title', 'content', 'status_id'])->with(['tags:id,name', 'users:id,name', 'status:id,name'])->simplePaginate(10);
         return $todos;
         return TodoResource::collection($todos)->response()->setStatusCode(200); // Done Automatically in Insomnia

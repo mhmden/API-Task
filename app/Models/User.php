@@ -26,6 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'banned_at'
     ];
 
 
@@ -38,7 +39,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    
+    
+    protected $dates = [
+        'banned_at'
+    ];
     /**
      * The attributes that should be cast.
      *

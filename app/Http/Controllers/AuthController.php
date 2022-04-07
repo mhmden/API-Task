@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\UserRegisterRequest;
 use App\Notifications\PasswordResetNotification;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 
@@ -29,7 +28,11 @@ class AuthController extends Controller
     public function login(UserLoginRequest $request) // Validation Rule are in fact bette
     {
         $user = User::firstWhere('email', $request->validated('email'));
-        if (!$user || !Hash::check($request->validated('password'), $user->password)) {
+        if (
+            !$user ||
+            !Hash::check($request->validated('password'), $user->password) ||
+            !!$user->banned_at
+        ) {                                            
             $response = response()->unauthenticated();
         } else {
             $token = $user->createToken('auth_token')->plainTextToken;
@@ -44,45 +47,31 @@ class AuthController extends Controller
         return response()->json('You have been logged out!');
     }
 
-    public function recover(Request $request) 
+    public function recover(Request $request) // Password
     {
         $request->validate(['email' => 'required|email|exists:users,email']);
         Password::sendResetLink(
             $request->only('email')
         );
-
         return response()->noContent(200);
     }
 
-    public function reset(Request $request)
+    public function reset(ResetPasswordRequest $request) // Password
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->safe()->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
-                $user->forceFill([
+                $user->update([
                     'password' => $password
-                ])->setRememberToken(Str::random(60));
-     
-                $user->save();
+                ]);
                 $user->notify(new PasswordResetNotification());
                 $user->tokens()->delete();
-     
                 event(new PasswordReset($user));
             }
         );
-        if (!$status == Password::PASSWORD_RESET){
+        if (!$status == Password::PASSWORD_RESET) {
             return response()->noContent(500);
         }
         return response()->noContent(200);
-        
     }
 }
-
-
-// A lot of lessons learned / and Not learned

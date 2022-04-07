@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
-use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BanController;
 use App\Http\Controllers\TodoController;
-use App\Http\Controllers\TrashedTodoController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\TrashedTodoController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,24 +28,27 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware(['auth:sanctum']);
 });
 
-Route::middleware([])->group(function () {
-    /** 
-     * Todo [] Users can be activated or deactivated
-     * Todo [X] Password Reset / Forgot Password for users. (This means Authenticated and Unauthenticated)
-     * Todo [X] Password Reset Sends a notification to the user. Via Email?
-    */
-
+/** 
+ * Todo [X] Cruddy BanController 
+ * Todo [X] Create Validation for Auth Controller
+ * Todo [X] Ban Index
+ * Todo [] Check if User is active via Middleware
+ * Todo [] Upload an attachment / Attachments for a Todo
+ * Todo [] Filter The Todos Based on any field.
+ * 
+ * 
+ * 
+ * 
+ */
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResources([
         '/todos' => TodoController::class,
         '/tags' => TagController::class,
         '/status' => StatusController::class,
     ]);
-    Route::apiResource('/trashed', TrashedTodoController::class)->except('store'); // No use for store method
+    Route::apiResource('/banned-users', BanController::class)->only('index','update', 'destroy');
+    Route::apiResource('/trashed', TrashedTodoController::class)->except('store');
 });
-// Todo [] Macro for Responses, and Error Codes
-// Todo [] Console Output
-
-
 /**
  *  
  *  
