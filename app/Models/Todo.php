@@ -42,4 +42,8 @@ class Todo extends Model
         return $this->hasMany(StatusHistory::class);
     }
 
+    public function files() {
+        return $this->hasMany(File::class);
+    }
+
 }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
+use App\Models\Todo;
 use App\Http\Requests\TodoRequest;
+
 use App\Http\Resources\TodoResource;
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\Todo;
 
 class TodoController extends Controller
 {
@@ -30,11 +31,25 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodoRequest $request)
+    public function store(TodoRequest $request) // ? Insert this stuff from within a transaction
     {
-        $todo = Todo::create($request->validated());
+        $todo = Todo::create($request->safe()->except('file'));
         $todo->users()->attach($request['assign_to']);
         $todo->tags()->attach($request['tag_id']);
+
+        if ($files = $request->file('file')) { // * If the request has a file, assign the variable
+            foreach ($files as $file) {
+                $name = $file->getClientOriginalName();
+                $path = $file->storeAs('Public/files/', 'Todo' . $todo->id . '/' . $name);
+
+                File::create([
+                    'name' => $name,
+                    'path' => $path,
+                    'todo_id' => $todo->id,
+                ]);
+            }
+        }
+
         return response()->noContent(201);
     }
 
