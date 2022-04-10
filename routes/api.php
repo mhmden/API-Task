@@ -2,13 +2,15 @@
 
 use App\Models\User;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BanController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BanController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TrashedTodoController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,7 +34,7 @@ Route::controller(AuthController::class)->group(function () {
  * Todo [X] Cruddy BanController 
  * Todo [X] Create Validation for Auth Controller
  * Todo [X] Ban Index
- * Todo [] Check if User is active via Middleware
+ * Todo [X] Check if User is active via Middleware
  * Todo [] Upload an attachment / Attachments for a Todo
  * Todo [] Filter The Todos Based on any field.
  * 
@@ -40,7 +42,7 @@ Route::controller(AuthController::class)->group(function () {
  * 
  * 
  */
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::apiResources([
         '/todos' => TodoController::class,
         '/tags' => TagController::class,
@@ -49,11 +51,3 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/banned-users', BanController::class)->only('index','update', 'destroy');
     Route::apiResource('/trashed', TrashedTodoController::class)->except('store');
 });
-/**
- *  
- *  
- * 
- * 
- * 
- * 
- */
