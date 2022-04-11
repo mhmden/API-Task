@@ -29,8 +29,7 @@ class TodoRequest extends FormRequest
             'status_id' => 'required|exists:statuses,id',
             'assign_to' => 'required|exists:users,id',
             'tag_id' => 'required|exists:tags,id',
-            
-            // TODO [X] validate assign_to and tag_id
+            'file.*' => 'required|mimes:txt, doc, docx, pdf|max:2048'
         ];
     }
 }

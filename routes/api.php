@@ -35,11 +35,8 @@ Route::controller(AuthController::class)->group(function () {
  * Todo [X] Create Validation for Auth Controller
  * Todo [X] Ban Index
  * Todo [X] Check if User is active via Middleware
- * Todo [] Upload an attachment / Attachments for a Todo
+ * Todo [X] Upload an attachment / Attachments for a Todo
  * Todo [] Filter The Todos Based on any field.
- * 
- * 
- * 
  * 
  */
 Route::middleware(['auth:sanctum', 'active'])->group(function () {

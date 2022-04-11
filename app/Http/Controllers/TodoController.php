@@ -31,13 +31,15 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodoRequest $request) // ? Insert this stuff from within a transaction
+    public function store(TodoRequest $request)
     {
-        $todo = Todo::create($request->safe()->except('file'));
+        $validData = $request->validated(); // * Validate Everything
+
+        $todo = Todo::create($validData);
         $todo->users()->attach($request['assign_to']);
         $todo->tags()->attach($request['tag_id']);
 
-        if ($files = $request->file('file')) { // * If the request has a file, assign the variable
+        if ($files = $request->file('file')) {
             foreach ($files as $file) {
                 $name = $file->getClientOriginalName();
                 $path = $file->storeAs('Public/files/', 'Todo' . $todo->id . '/' . $name);
