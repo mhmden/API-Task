@@ -8,21 +8,30 @@ use App\Http\Requests\TodoRequest;
 
 use App\Http\Resources\TodoResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pipeline\Pipeline;
 
 class TodoController extends Controller
 {
-    // TODO [X] find the proper http codes for: created, updated, deleted
     /**
      * Display a listing of the resource.
      *  
      * @return \Illuminate\Http\Response
      */
-    public function index() // TODO [] Re-Evaluate This stuff
+    public function index()
     {
+        $todos = app(Pipeline::class)
+                ->send(Todo::query())
+                ->through(Todo::PIPES)
+                ->thenReturn()
+                ->get(['id','title' ,'content','status_id']);
 
-        $todos = Todo::select(['id', 'title', 'content', 'status_id'])->with(['tags:id,name', 'users:id,name', 'status:id,name'])->simplePaginate(10);
-        return $todos;
-        return TodoResource::collection($todos)->response()->setStatusCode(200); // Done Automatically in Insomnia
+        return response()->json($todos);
+
+
+
+        // $todos = Todo::select(['id', 'title', 'content', 'status_id'])->with(['tags:id,name', 'users:id,name', 'status:id,name'])->simplePaginate(10);
+        // return $todos;
+        // return TodoResource::collection($todos)->response()->setStatusCode(200); // Done Automatically in Insomnia
     }
 
     /**
@@ -35,14 +44,14 @@ class TodoController extends Controller
     {
         $validData = $request->validated(); // * Validate Everything
 
-        $todo = Todo::create($validData);
+        $todo = Todo::create($request->except(['assign_to', 'tag_id', 'file']));
         $todo->users()->attach($request['assign_to']);
         $todo->tags()->attach($request['tag_id']);
 
         if ($files = $request->file('file')) {
             foreach ($files as $file) {
                 $name = $file->getClientOriginalName();
-                $path = $file->storeAs('Public/files/', 'Todo' . $todo->id . '/' . $name);
+                $path = $file->storeAs('files', 'Todo' . $todo->id . '/' . $name);
 
                 File::create([
                     'name' => $name,

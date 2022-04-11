@@ -25,9 +25,9 @@ class BanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request) //
     {
-        //
+
     }
 
     /**
@@ -48,7 +48,7 @@ class BanController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user) // TODO
     {
         $user->update(['banned_at' => now()]);
         $user->tokens()->delete(); 

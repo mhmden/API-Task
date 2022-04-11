@@ -22,6 +22,13 @@ class Todo extends Model
         'assign_to' => 'array',
     ];
 
+    const PIPES = [
+        // TODO m:m filters
+        \App\TodoQueryFilters\Title::class,
+        \App\TodoQueryFilters\Content::class,
+        \App\TodoQueryFilters\Status::class,
+    ];
+
     public function users (){ // M:N 
         return $this->belongsToMany(User::class)
                     ->whereNull('todo_user.deleted_at')
