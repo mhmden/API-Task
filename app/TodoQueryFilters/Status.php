@@ -2,17 +2,10 @@
 
 namespace App\TodoQueryFilters;
 
-use Closure;
 
-class Status
+class Status extends Filter
 {
-
-    public function handle($request, \Closure $next)
-    {
-        if (!request()->has('status')) {
-            return $next($request);
-        }
-        $builder = $next($request);
-        return $builder->where('status_id', request('status'));
+    protected function applyFilter($builder){
+        return $builder->where('status_id' , request($this->filterName()));
     }
 }

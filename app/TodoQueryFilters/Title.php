@@ -2,20 +2,11 @@
 
 namespace App\TodoQueryFilters;
 
-use Closure;
 
-class Title
+class Title extends Filter
 {
-
-    // TODO Watch pipeline vidoe till the end
-    public function handle($request, \Closure $next)
+    protected function applyFilter($builder)
     {
-
-        if( !request()->has('title')){
-            return $next($request);
-        }
-        $builder = $next($request);
-
-        return $builder->where('title', request('title'));
+        return $builder->where($this->filterName(), request($this->filterName()));
     }
 }

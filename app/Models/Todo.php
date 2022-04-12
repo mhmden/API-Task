@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Pipeline\Pipeline;
 
 class Todo extends Model
 {
@@ -22,8 +23,16 @@ class Todo extends Model
         'assign_to' => 'array',
     ];
 
+    public static function allTodos (){
+        return app(Pipeline::class)
+                        ->send(Todo::query())
+                        ->through(Todo::PIPES)
+                        ->thenReturn()
+                        ->get();
+    }
+
     const PIPES = [
-        // TODO m:m filters
+        \App\TodoQueryFilters\Tag::class,
         \App\TodoQueryFilters\Title::class,
         \App\TodoQueryFilters\Content::class,
         \App\TodoQueryFilters\Status::class,

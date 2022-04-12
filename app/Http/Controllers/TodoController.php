@@ -7,8 +7,6 @@ use App\Models\Todo;
 use App\Http\Requests\TodoRequest;
 
 use App\Http\Resources\TodoResource;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Pipeline\Pipeline;
 
 class TodoController extends Controller
 {
@@ -19,11 +17,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = app(Pipeline::class)
-                ->send(Todo::query())
-                ->through(Todo::PIPES)
-                ->thenReturn()
-                ->get(['id','title' ,'content','status_id']);
+        $todos = Todo::allTodos();
 
         return response()->json($todos);
 
@@ -51,7 +45,7 @@ class TodoController extends Controller
         if ($files = $request->file('file')) {
             foreach ($files as $file) {
                 $name = $file->getClientOriginalName();
-                $path = $file->storeAs('files', 'Todo' . $todo->id . '/' . $name);
+                $path = $file->store('files', 'public'); // * Second Parameter is for disk
 
                 File::create([
                     'name' => $name,

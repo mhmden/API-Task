@@ -2,20 +2,10 @@
 
 namespace App\TodoQueryFilters;
 
-use Closure;
-
-class Content
+class Content extends Filter
 {
-
-
-    public function handle($request, \Closure $next)
+    protected function applyFilter($builder)
     {
-
-        if( !request()->has('content')){
-            return $next($request);
-        }
-        $builder = $next($request);
-
-        return $builder->where('content', 'like', '%'.request('content').'%');
+        return $builder->where($this->filterName(), 'like', '%'.request($this->filterName()).'%');   
     }
 }
