@@ -32,10 +32,14 @@ class Todo extends Model
     }
 
     const PIPES = [
-        \App\TodoQueryFilters\Tag::class,
         \App\TodoQueryFilters\Title::class,
         \App\TodoQueryFilters\Content::class,
         \App\TodoQueryFilters\Status::class,
+        \App\TodoQueryFilters\Tags::class,
+        \App\TodoQueryFilters\Users::class,
+        \App\TodoQueryFilters\Files::class,
+
+        // Todo -> Could add more filters relevant to time, and possibly hide todos by banned users.
     ];
 
     public function users (){ // M:N 

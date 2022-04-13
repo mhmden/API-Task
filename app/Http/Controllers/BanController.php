@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class BanController extends Controller
 {
@@ -14,7 +14,6 @@ class BanController extends Controller
      */
     public function index()
     {
-        //
         $user = User::whereNotNull('banned_at')->get(['id', 'name']);
         return response()->json($user);
     }
@@ -27,7 +26,13 @@ class BanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Post Body
+        $user = User::find($request->id);
+        $user->update([
+            'banned_at' => now(),
+        ]);
+        $user->tokens()->delete();
+        return response()->json("{$user->name} has been banned");
     }
 
     /**
@@ -36,15 +41,9 @@ class BanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) // UnBan
+    public function show($id)
     {
         //
-        $user = User::find($id);
-        $user->update(['banned_at' => null]);
-        return response()->json([
-            'User' => $user->name,
-            'message' => 'Has been Unbanned'
-        ]);
     }
 
     /**
@@ -54,15 +53,9 @@ class BanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) // ban ?
+    public function update(Request $request, $id)
     {
-        $user = User::find($id);
-        $user->update(['banned_at' => now()]);
-        $user->tokens()->delete(); 
-        return response()->json([
-            'User' => $user->name,
-            'message' => 'Has been Unbanned'
-        ]);
+        //
     }
 
     /**
@@ -73,6 +66,10 @@ class BanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        $user->update([
+            'banned_at' => null,
+        ]);
+        return response()->json("{$user->name} has been unbanned");
     }
 }

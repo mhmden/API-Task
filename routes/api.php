@@ -35,11 +35,13 @@ Route::controller(AuthController::class)->group(function () {
 /** 
  * Todo [X] Check if User is active via Middleware
  * Todo [X] Upload an attachment / Attachments for a Todo
+ * 
+ * 
  * Todo [X] Filter The Todos Based on any field.
  * Todo [X] Consider changing ban methods
  * Todo [X] Complete the Pipeline tutorial
  * Todo [X] Create Pipes to query about relationship existence -> Tags /  Status
- * Todo [X] Change System files so that. -> No need it can go in the second parameter
+ * Todo [X] Change System files -> No need it can go in the second parameter
  * TODO [X] Change the store method, don't use folders, and let it be hashed
  */
 Route::middleware(['auth:sanctum', 'active'])->group(function () {
@@ -50,22 +52,10 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     ]);
     Route::apiResource('/trashed', TrashedTodoController::class)->except('store');
     Route::apiResource('/bans', BanController::class)->only([
-        'index', 'show', 'update'
+        'index', 'store', 'destroy'
     ]);
 });
 
-Route::post('/test', function (Request $request) {
-
-    // * Hardcode the search for the tags method
-
-    $todo = Todo::query();
-
-    if (request()->has('tags')){
-        $todo->has('tags');
-    }
-
-    $x = $todo->get();
-
-    return response()->json($x);
+Route::post('/test', function (Request $request) { // * Testing Only
 
 });

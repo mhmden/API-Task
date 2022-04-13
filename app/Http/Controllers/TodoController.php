@@ -21,11 +21,6 @@ class TodoController extends Controller
 
         return response()->json($todos);
 
-
-
-        // $todos = Todo::select(['id', 'title', 'content', 'status_id'])->with(['tags:id,name', 'users:id,name', 'status:id,name'])->simplePaginate(10);
-        // return $todos;
-        // return TodoResource::collection($todos)->response()->setStatusCode(200); // Done Automatically in Insomnia
     }
 
     /**

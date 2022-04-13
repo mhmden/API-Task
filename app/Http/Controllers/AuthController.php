@@ -22,7 +22,6 @@ class AuthController extends Controller
         $user = User::create($request->validated());
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->successWithToken($token);
-        // (new ConsoleOutput())->writeln("");
     }
 
     public function login(UserLoginRequest $request) // Validation Rule are in fact bette
