@@ -38,6 +38,8 @@ class Todo extends Model
         \App\TodoQueryFilters\Tags::class,
         \App\TodoQueryFilters\Users::class,
         \App\TodoQueryFilters\Files::class,
+        \App\TodoQueryFilters\Date::class,
+        // TODO created_at filter
 
         // Todo -> Could add more filters relevant to time, and possibly hide todos by banned users.
     ];

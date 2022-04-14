@@ -42,11 +42,15 @@ class TodoController extends Controller
                 $name = $file->getClientOriginalName();
                 $path = $file->store('files', 'public'); // * Second Parameter is for disk
 
-                File::create([
+                $todo->files()->create([
                     'name' => $name,
                     'path' => $path,
-                    'todo_id' => $todo->id,
                 ]);
+                // File::create([
+                //     'name' => $name,
+                //     'path' => $path,
+                //     'todo_id' => $todo->id,
+                // ]);
             }
         }
 

@@ -1,7 +1,8 @@
 <?php
 
-use App\Models\Todo;
+use Carbon\Carbon;
 
+use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -44,7 +45,8 @@ Route::controller(AuthController::class)->group(function () {
  * Todo [X] Change System files -> No need it can go in the second parameter
  * TODO [X] Change the store method, don't use folders, and let it be hashed
  */
-Route::middleware(['auth:sanctum', 'active'])->group(function () {
+// Route::middleware(['auth:sanctum', 'active'])->group(function () {
+Route::middleware([])->group(function () {
     Route::apiResources([
         '/todos' => TodoController::class,
         '/tags' => TagController::class,
@@ -56,6 +58,3 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     ]);
 });
 
-Route::post('/test', function (Request $request) { // * Testing Only
-
-});
