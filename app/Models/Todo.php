@@ -39,9 +39,6 @@ class Todo extends Model
         \App\TodoQueryFilters\Users::class,
         \App\TodoQueryFilters\Files::class,
         \App\TodoQueryFilters\Date::class,
-        // TODO created_at filter
-
-        // Todo -> Could add more filters relevant to time, and possibly hide todos by banned users.
     ];
 
     public function users (){ // M:N 
@@ -56,6 +53,14 @@ class Todo extends Model
                     ->withTimestamps();
     }
 
+    public function children() // * Specific Children 
+    {
+        return $this->hasMany(Todo::class, 'parent_id');
+    }
+
+    public function allKids() { // ? Not Effecient
+        return $this->hasMany(Todo::class, 'parent_id')->with('children');
+    }
     public function status(){ // 1:N The todo will have the foriegn key as is in the current system
         return $this->belongsTo(Status::class);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\File;
 use App\Models\Todo;
 use App\Http\Requests\TodoRequest;
 
@@ -32,10 +31,9 @@ class TodoController extends Controller
     public function store(TodoRequest $request)
     {
         $validData = $request->validated(); // * Validate Everything
-
         $todo = Todo::create($request->except(['assign_to', 'tag_id', 'file']));
-        $todo->users()->attach($request['assign_to']);
-        $todo->tags()->attach($request['tag_id']);
+        $todo->users()->attach($request->assign_to);
+        $todo->tags()->attach($request->tag_id);
 
         if ($files = $request->file('file')) {
             foreach ($files as $file) {
@@ -46,11 +44,6 @@ class TodoController extends Controller
                     'name' => $name,
                     'path' => $path,
                 ]);
-                // File::create([
-                //     'name' => $name,
-                //     'path' => $path,
-                //     'todo_id' => $todo->id,
-                // ]);
             }
         }
 

@@ -20,6 +20,7 @@ class TodoFactory extends Factory
             'title' => $this->faker->word(),
             'content' => $this->faker->text($maxNbChars = 200),
             'status_id' => $this->faker->numberBetween($min = 1, $max = 3),
+            'parent_id' => $this->faker->numberBetween($min = 1, $max = 5),
         ];
     }
 }

@@ -44,6 +44,10 @@ Route::controller(AuthController::class)->group(function () {
  * Todo [X] Create Pipes to query about relationship existence -> Tags /  Status
  * Todo [X] Change System files -> No need it can go in the second parameter
  * TODO [X] Change the store method, don't use folders, and let it be hashed
+ * Todo [ ] User Permissions for each Todo Crud.
+ * Todo [ ] Subtodos 
+ * 
+ * 
  */
 // Route::middleware(['auth:sanctum', 'active'])->group(function () {
 Route::middleware([])->group(function () {
