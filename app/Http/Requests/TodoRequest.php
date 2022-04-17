@@ -29,7 +29,7 @@ class TodoRequest extends FormRequest
             'status_id' => 'required|exists:statuses,id',
             'assign_to' => 'required|exists:users,id',
             'tag_id' => 'required|exists:tags,id',
-            'file.*' => 'nullable|mimes:txt, doc, docx, pdf|max:2048'
+            'file.*' => 'nullable|mimetypes:text/plain|max:2048' // This equates to an optional array ? and we used mimetypes because mimes don't behave as expected for some reason.
         ];
     }
 }

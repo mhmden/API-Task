@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TrashedTodoController;
+use App\Services\TestService;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,7 @@ Route::controller(AuthController::class)->group(function () {
  * Todo [X] Create Pipes to query about relationship existence -> Tags /  Status
  * Todo [X] Change System files -> No need it can go in the second parameter
  * TODO [X] Change the store method, don't use folders, and let it be hashed
+ * Todo [ ] Understand the nature of file validation. Check file info before checking validation
  * Todo [ ] User Permissions for each Todo Crud.
  * Todo [ ] Subtodos 
  * 
@@ -61,4 +63,3 @@ Route::middleware([])->group(function () {
         'index', 'store', 'destroy'
     ]);
 });
-

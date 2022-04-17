@@ -6,6 +6,7 @@ use App\Models\Todo;
 use App\Http\Requests\TodoRequest;
 
 use App\Http\Resources\TodoResource;
+use App\Services\TodoService;
 
 class TodoController extends Controller
 {
@@ -28,25 +29,10 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodoRequest $request)
+    public function store(TodoRequest $request) // this step here validates the data.
     {
-        $validData = $request->validated(); // * Validate Everything
-        $todo = Todo::create($request->except(['assign_to', 'tag_id', 'file']));
-        $todo->users()->attach($request->assign_to);
-        $todo->tags()->attach($request->tag_id);
 
-        if ($files = $request->file('file')) {
-            foreach ($files as $file) {
-                $name = $file->getClientOriginalName();
-                $path = $file->store('files', 'public'); // * Second Parameter is for disk
-
-                $todo->files()->create([
-                    'name' => $name,
-                    'path' => $path,
-                ]);
-            }
-        }
-
+        $todo = (new TodoService())->createTodo($request->safe()); 
         return response()->noContent(201);
     }
 

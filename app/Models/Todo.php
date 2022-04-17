@@ -59,7 +59,7 @@ class Todo extends Model
     }
 
     public function allKids() { // ? Not Effecient
-        return $this->hasMany(Todo::class, 'parent_id')->with('children');
+        return $this->hasMany(Todo::class, 'parent_id')->with('children'); // All Descendants
     }
     public function status(){ // 1:N The todo will have the foriegn key as is in the current system
         return $this->belongsTo(Status::class);
