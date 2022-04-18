@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TodoRequest extends FormRequest
@@ -23,13 +24,27 @@ class TodoRequest extends FormRequest
      */
     public function rules()
     {
+        $users = $this->assign_to;
+        $tags = $this->tag_id;
+
+        
         return [
+            'parent_id' => 'nullable|exists:todos,id', // ? Beaware of How nullable and sometimes differ
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'status_id' => 'required|exists:statuses,id',
+            'status_id' => 'required|numeric|exists:statuses,id',
             'assign_to' => 'required|exists:users,id',
             'tag_id' => 'required|exists:tags,id',
-            'file.*' => 'nullable|mimetypes:text/plain|max:2048' // This equates to an optional array ? and we used mimetypes because mimes don't behave as expected for some reason.
+            'file' => 'nullable|array|between:1,5',
+                'file.*' => 'nullable|file|mimetypes:text/plain|max:2048' ,
+            'children' => 'sometimes|array',
+                'children.*.title' => 'required|string|max:255',
+                'children.*.content' => 'required|string',
+                'children.*.status_id' => 'required|numeric|exists:statuses,id',
+                'children.*.assign_to' => ['required', 'array', Rule::in($users)],
+                'children.*.tag_id' => ['required', 'array', Rule::in($tags)],
+                'children.*.file' => 'nullable|array|between:1,3',
+                'children.*.file.*' => 'nullable|file|mimetypes:text/plain|max:2048' ,
         ];
     }
 }

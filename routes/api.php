@@ -63,3 +63,12 @@ Route::middleware([])->group(function () {
         'index', 'store', 'destroy'
     ]);
 });
+Route::post('/test', function (Request $request) {
+
+    $validated = $request->validate([
+        'item' => 'required',
+        'nested' => 'required|array|between:2,4',
+        'nested.*.item' => 'required',
+    ]);
+    return response()->json($validated);
+});

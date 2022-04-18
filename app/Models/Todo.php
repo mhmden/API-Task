@@ -15,20 +15,24 @@ class Todo extends Model
     protected $fillable = [
         'title',
         'content',
-        'status_id'
+        'status_id',
+        'parent_id'
     ];
 
     protected $casts = [
-        'todo_tag' => 'array',
+        'parent_id' => 'array',
+        'tag_id' => 'array',
         'assign_to' => 'array',
+        'children' => 'array',
     ];
 
-    public static function allTodos (){
+    public static function allTodos()
+    {
         return app(Pipeline::class)
-                        ->send(Todo::query())
-                        ->through(Todo::PIPES)
-                        ->thenReturn()
-                        ->get();
+            ->send(Todo::query())
+            ->through(Todo::PIPES)
+            ->thenReturn()
+            ->get();
     }
 
     const PIPES = [
@@ -41,16 +45,33 @@ class Todo extends Model
         \App\TodoQueryFilters\Date::class,
     ];
 
-    public function users (){ // M:N 
+    public function users()
+    { // M:N 
         return $this->belongsToMany(User::class)
-                    ->whereNull('todo_user.deleted_at')
-                    ->withTimestamps();
+            ->whereNull('todo_user.deleted_at')
+            ->withTimestamps();
     }
 
-    public function tags(){ // M:N
+    public function tags()
+    { // M:N
         return $this->belongsToMany(Tag::class)
-                    ->whereNull('tag_todo.deleted_at')
-                    ->withTimestamps();
+            ->whereNull('tag_todo.deleted_at')
+            ->withTimestamps();
+    }
+
+    public function status()
+    { // 1:N The todo will have the foriegn key as is in the current system
+        return $this->belongsTo(Status::class);
+    }
+
+    public function statusHistory()
+    {
+        return $this->hasMany(StatusHistory::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
     }
 
     public function children() // * Specific Children 
@@ -58,19 +79,8 @@ class Todo extends Model
         return $this->hasMany(Todo::class, 'parent_id');
     }
 
-    public function allKids() { // ? Not Effecient
+    public function allKids()
+    { // ? Not Effecient
         return $this->hasMany(Todo::class, 'parent_id')->with('children'); // All Descendants
     }
-    public function status(){ // 1:N The todo will have the foriegn key as is in the current system
-        return $this->belongsTo(Status::class);
-    }
-
-    public function statusHistory() {
-        return $this->hasMany(StatusHistory::class);
-    }
-
-    public function files() {
-        return $this->hasMany(File::class);
-    }
-
 }
