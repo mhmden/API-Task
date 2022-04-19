@@ -58,10 +58,8 @@ Route::middleware([])->group(function () {
         '/tags' => TagController::class,
         '/status' => StatusController::class,
     ]);
-    Route::apiResource('/trashed', TrashedTodoController::class)->except('store');
-    Route::apiResource('/bans', BanController::class)->only([
-        'index', 'store', 'destroy'
-    ]);
+    Route::apiResource('/trashed', TrashedTodoController::class, ['except' => ['store']]);
+    Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
 });
 Route::post('/test', function (Request $request) {
 

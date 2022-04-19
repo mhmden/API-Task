@@ -16,7 +16,15 @@ class TodoService
      * 
      */
 
-    public function createTodo($validData)
+    public function CreateTodoWithChildren($request){
+        $todo = $this->createTodo($request->safe());
+        $kids = (!empty($todo->children)) ?: $this->createChildren($request->children, $todo);
+        return (!isset($kids)) ? $todo: $todo->bloodline();
+    }
+
+
+
+    public function createTodo($validData) // Has to be safe()
     {
         // $valid = $request->safe(); // To use only and except
         $todo = Todo::create($validData->except(['assign_to', 'tag_id', 'file']));
@@ -53,7 +61,7 @@ class TodoService
                     }
                 }
             }
-            return $todo->children();
+            return $todo->children()->get();
         }
     }
 }
