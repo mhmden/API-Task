@@ -37,7 +37,7 @@ class TodoRequest extends FormRequest
             'tag_id' => 'required|exists:tags,id',
             'file' => 'nullable|array|between:1,5',
                 'file.*' => 'nullable|file|mimetypes:text/plain|max:2048' ,
-            'children' => 'sometimes|array',
+            'children' => 'nullable|array',
                 'children.*.title' => 'required|string|max:255',
                 'children.*.content' => 'required|string',
                 'children.*.status_id' => 'required|numeric|exists:statuses,id',

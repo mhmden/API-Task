@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Pipeline\Pipeline;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Todo extends Model
 {
     use HasApiTokens, HasFactory, SoftDeletes;
+
+    use HasRecursiveRelationships;
 
     protected $fillable = [
         'title',
@@ -20,7 +23,6 @@ class Todo extends Model
     ];
 
     protected $casts = [
-        'parent_id' => 'array',
         'tag_id' => 'array',
         'assign_to' => 'array',
         'children' => 'array',
@@ -73,14 +75,6 @@ class Todo extends Model
     {
         return $this->hasMany(File::class);
     }
+    // * ==============================
 
-    public function children() // * Specific Children 
-    {
-        return $this->hasMany(Todo::class, 'parent_id');
-    }
-
-    public function allKids()
-    { // ? Not Effecient
-        return $this->hasMany(Todo::class, 'parent_id')->with('children'); // All Descendants
-    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Todo;
+use Illuminate\Support\Arr;
 
 class TodoService
 {
@@ -15,13 +16,13 @@ class TodoService
      * 
      */
 
-    public function createTodo($input)
+    public function createTodo($validData)
     {
-        $valid = $input->safe();
-        $todo = Todo::create($valid->except(['assign_to', 'tag_id', 'file']));
-        $todo->users()->attach($valid->assign_to);
-        $todo->tags()->attach($valid->tag_id);
-        if ($files = $input->safe()->file) { // * Array of files and if files exist too because they are nullable in the rule
+        // $valid = $request->safe(); // To use only and except
+        $todo = Todo::create($validData->except(['assign_to', 'tag_id', 'file']));
+        $todo->users()->attach($validData->assign_to);
+        $todo->tags()->attach($validData->tag_id);
+        if ($files = $validData->file) { // * Array of files and if files exist too because they are nullable in the rule
             foreach ($files as $file) {
                 $name = $file->getClientOriginalName();
                 $path = $file->store('files', 'public');
@@ -31,10 +32,29 @@ class TodoService
                 ]);
             }
         }
-        // $arr = $valid->children;
-        
-        $kids = $todo->children()->createMany($valid->children);
         return $todo;
+    }
+
+    public function createChildren($children, $todo)
+     {
+        if (!empty($children)) { 
+            foreach ($children as $child){ // * Child is each array
+                $x = $todo->children()->create(Arr::except($child, ['assign_to', 'tag_id', 'file']));
+                $x->users()->attach($child['assign_to']);
+                $x->tags()->attach($child['tag_id']);
+                if (Arr::has($child, 'file')){ // ? This condition is messed up
+                    foreach ($child['file'] as $file) {
+                        $name = $file->getClientOriginalName();
+                        $path = $file->store('files', 'public');
+                        $x->files()->create([
+                            'name' => $name,
+                            'path' => $path,
+                        ]);
+                    }
+                }
+            }
+            return $todo->children();
+        }
     }
 }
 
