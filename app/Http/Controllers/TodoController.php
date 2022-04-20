@@ -32,6 +32,7 @@ class TodoController extends Controller
     public function store(TodoRequest $request) // this step here validates the data.
     {
         $todo = (new TodoService())->CreateTodoWithChildren($request);
+        dd($todo->get());
         return response()->noContent(201);
     }
 

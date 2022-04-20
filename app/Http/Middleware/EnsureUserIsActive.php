@@ -16,7 +16,8 @@ class EnsureUserIsActive
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->banned_at){
+        // Todo, Can refactor this
+        if (auth()->user()->banned_at){
             return response()->noContent(403);
         }
         return $next($request);

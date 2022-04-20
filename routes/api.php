@@ -45,9 +45,9 @@ Route::controller(AuthController::class)->group(function () {
  * Todo [X] Create Pipes to query about relationship existence -> Tags /  Status
  * Todo [X] Change System files -> No need it can go in the second parameter
  * TODO [X] Change the store method, don't use folders, and let it be hashed
- * Todo [ ] Understand the nature of file validation. Check file info before checking validation
+ * Todo [X] Understand the nature of file validation. Check file info before checking validation
+ * Todo [X] Subtodos 
  * Todo [ ] User Permissions for each Todo Crud.
- * Todo [ ] Subtodos 
  * 
  * 
  */
@@ -57,16 +57,13 @@ Route::middleware([])->group(function () {
         '/todos' => TodoController::class,
         '/tags' => TagController::class,
         '/status' => StatusController::class,
-    ]);
+    ]); // Todo: [] Add Middleware to access those Particular 
     Route::apiResource('/trashed', TrashedTodoController::class, ['except' => ['store']]);
     Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
+    
 });
+
 Route::post('/test', function (Request $request) {
 
-    $validated = $request->validate([
-        'item' => 'required',
-        'nested' => 'required|array|between:2,4',
-        'nested.*.item' => 'required',
-    ]);
-    return response()->json($validated);
+
 });

@@ -20,6 +20,7 @@ class AuthController extends Controller
     public function register(UserRegisterRequest $request)
     {
         $user = User::create($request->validated());
+        // Todo: Assign Role
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->successWithToken($token);
     }

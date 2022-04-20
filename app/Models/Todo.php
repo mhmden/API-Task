@@ -11,9 +11,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Todo extends Model
 {
-    use HasApiTokens, HasFactory, SoftDeletes;
-
-    use HasRecursiveRelationships;
+    use HasApiTokens, HasFactory, SoftDeletes, HasRecursiveRelationships;
 
     protected $fillable = [
         'title',

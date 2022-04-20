@@ -18,8 +18,7 @@ class TodoService
 
     public function CreateTodoWithChildren($request){
         $todo = $this->createTodo($request->safe());
-        $kids = (!empty($todo->children)) ?: $this->createChildren($request->children, $todo);
-        return (!isset($kids)) ? $todo: $todo->bloodline();
+        return (!empty($request->children)) ? $this->createChildren($request->children, $todo) : $todo;
     }
 
 
@@ -45,7 +44,6 @@ class TodoService
 
     public function createChildren($children, $todo)
      {
-        if (!empty($children)) { 
             foreach ($children as $child){ // * Child is each array
                 $x = $todo->children()->create(Arr::except($child, ['assign_to', 'tag_id', 'file']));
                 $x->users()->attach($child['assign_to']);
@@ -61,8 +59,7 @@ class TodoService
                     }
                 }
             }
-            return $todo->children()->get();
-        }
+            return $todo->bloodline();
     }
 }
 
