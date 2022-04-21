@@ -52,18 +52,12 @@ Route::controller(AuthController::class)->group(function () {
  * 
  */
 // Route::middleware(['auth:sanctum', 'active'])->group(function () {
-Route::middleware([])->group(function () {
+Route::middleware(['auth:sanctum', 'active', 'role:user'])->group(function () {
     Route::apiResources([
         '/todos' => TodoController::class,
         '/tags' => TagController::class,
         '/status' => StatusController::class,
-    ]); // Todo: [] Add Middleware to access those Particular 
+    ]);
     Route::apiResource('/trashed', TrashedTodoController::class, ['except' => ['store']]);
     Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
-    
-});
-
-Route::post('/test', function (Request $request) {
-
-
 });
