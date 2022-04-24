@@ -1,7 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -14,6 +12,7 @@ use App\Http\Controllers\TodoController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TrashedTodoController;
 use App\Services\TestService;
+use Spatie\Permission\Contracts\Permission;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,17 +46,34 @@ Route::controller(AuthController::class)->group(function () {
  * TODO [X] Change the store method, don't use folders, and let it be hashed
  * Todo [X] Understand the nature of file validation. Check file info before checking validation
  * Todo [X] Subtodos 
- * Todo [ ] User Permissions for each Todo Crud.
- * 
+ * Todo [X] User Permissions for each Todo Crud.
+ * Todo [ ] Work on my route group Skills.
  * 
  */
 // Route::middleware(['auth:sanctum', 'active'])->group(function () {
-Route::middleware(['auth:sanctum', 'active', 'role:user'])->group(function () {
-    Route::apiResources([
-        '/todos' => TodoController::class,
-        '/tags' => TagController::class,
-        '/status' => StatusController::class,
-    ]);
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::group(['middleware' => 'role:user|active'], function () {
+        Route::apiResources([
+            '/todos' => TodoController::class,
+            '/tags' => TagController::class,
+            '/status' => StatusController::class,
+        ]);
+    });
     Route::apiResource('/trashed', TrashedTodoController::class, ['except' => ['store']]);
     Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
 });
+
+Route::post('/test', function () {
+
+    // How to pass an array of permissions inside the Permissions Create Method.
+
+    $userPermissions = ['view todos', 'store todo', 'show todo', 'update todo', 'delete todo'];
+
+    $permissions = collect($userPermissions)->map(function ($permission) {
+        return ['name' => $permission];
+    });
+
+    dd($permissions->toArray());
+
+});
+

@@ -21,28 +21,29 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Create a list of permission names
 
+        // $userPermissions = ['view todos', 'store todo', 'show todo', 'update todo', 'delete todo'];
+
+        // $permissions = collect($userPermissions)->map(function ($permission) {
+        //     return ['name' => $permission];
+        // });
+
+        // Permission::insert($permissions->toArray());
+
         Permission::create([
             'name' => 'view todos',
-            'guard_name' => 'api'
-    ]);
+        ]);
         Permission::create([
             'name' => 'store todo',
-            'guard_name' => 'api'
-    ]);
+        ]);
         Permission::create([
             'name' => 'show todo',
-            'guard_name' => 'api'
-    ]);
+        ]);
         Permission::create([
             'name' => 'update todo',
-            'guard_name' => 'api'
-    ]);
+        ]);
         Permission::create([
             'name' => 'delete todo',
-            'guard_name' => 'api'
-    ]);
-        
-    
+        ]);
         $role = Role::create(['name' => 'user']);
         $role->givePermissionTo(Permission::all());
     }

@@ -42,7 +42,6 @@ class User extends Authenticatable
         'remember_token',
     ];
     
-    
     protected $dates = [
         'banned_at'
     ];

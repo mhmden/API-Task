@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 
 class UserSeeder extends Seeder
 {
@@ -15,6 +17,15 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        $user = User::create([ // Basic User
+            'name' => 'User Admin',
+            'email' => 'test@test.test',
+            'email_verified_at' => now(),
+            'password' => 'testtest',
+            'remember_token' => Str::random(10),
+        ]);
+        $user->assignRole('user');
+
         User::factory()->count(10)->create();
     }
 }
