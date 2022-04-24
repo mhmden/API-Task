@@ -21,30 +21,43 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Create a list of permission names
 
-        // $userPermissions = ['view todos', 'store todo', 'show todo', 'update todo', 'delete todo'];
+        $userPermissions = [
+            'index todos', 
+            'store todo',
+            'show todo',
+            'update todo',
+            'delete todo',
+            'index tags',
+            'store tag',
+            'show tag',
+            'update tag',
+            'destroy tag',
+        ];
+        $adminPermissions = [
+            'index statuses',
+            'store status',
+            'show status',
+            'update status',
+            'destroy status',
+            'index trash',
+            'show trashed',
+            'update trashed', // * Restore
+            'delete trashed', // * ForceDelete
+            'index banned',
+            'store banned', // * Issue Ban
+            'destroy banned' // * unBan
+        ];
 
-        // $permissions = collect($userPermissions)->map(function ($permission) {
-        //     return ['name' => $permission];
-        // });
+        $permissions = collect(array_merge($userPermissions, $adminPermissions))->map(function ($permission) {
+            return ['name' => $permission, 'guard_name' => 'web'];
+        });
 
-        // Permission::insert($permissions->toArray());
+        Permission::insert($permissions->toArray()); // Insert accepts an array.
 
-        Permission::create([
-            'name' => 'view todos',
-        ]);
-        Permission::create([
-            'name' => 'store todo',
-        ]);
-        Permission::create([
-            'name' => 'show todo',
-        ]);
-        Permission::create([
-            'name' => 'update todo',
-        ]);
-        Permission::create([
-            'name' => 'delete todo',
-        ]);
-        $role = Role::create(['name' => 'user']);
-        $role->givePermissionTo(Permission::all());
+        $userRole = Role::create(['name' => 'user']);
+        $userRole->givePermissionTo($userPermissions);
+
+        $adminRole = Role::create(['name' => 'admin']);
+        $adminRole->givePermissionTo($adminPermissions);
     }
 }
