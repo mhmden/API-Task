@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\AutScope;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -77,7 +78,9 @@ class Todo extends Model
 
     protected static function booted() // Global scopes modify the all query
     {
-        static::addGlobalScope(new AutScope);
+        static::addGlobalScope('aut', function (Builder $builder) {
+            $builder->where('title', 'aut');
+        });
     }
 
     // * ==============================
