@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\AutScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,6 +74,12 @@ class Todo extends Model
     {
         return $this->hasMany(File::class);
     }
+
+    protected static function booted() // Global scopes modify the all query
+    {
+        static::addGlobalScope(new AutScope);
+    }
+
     // * ==============================
 
 }

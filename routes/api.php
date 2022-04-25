@@ -34,23 +34,10 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 /** 
- * Todo [X] Check if User is active via Middleware
- * Todo [X] Upload an attachment / Attachments for a Todo
- * 
- * 
- * Todo [X] Filter The Todos Based on any field.
- * Todo [X] Consider changing ban methods
- * Todo [X] Complete the Pipeline tutorial
- * Todo [X] Create Pipes to query about relationship existence -> Tags /  Status
- * Todo [X] Change System files -> No need it can go in the second parameter
- * TODO [X] Change the store method, don't use folders, and let it be hashed
- * Todo [X] Understand the nature of file validation. Check file info before checking validation
- * Todo [X] Subtodos 
- * Todo [X] User Permissions for each Todo Crud.
- * 
+ * Todo : Create a global scope that grabs the aut title
  */
-// Route::middleware(['auth:sanctum', 'active'])->group(function () {
-Route::group(['middleware' => 'auth:sanctum'], function () {
+// Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group([], function () {
     Route::group(['middleware' => 'role:user|active'], function () {
         Route::apiResources([
             '/todos' => TodoController::class,
@@ -58,10 +45,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ]);
     });
 
-    Route::group(['middleware' => 'role:admin'], function () {
+    Route::group([], function () {
         Route::apiResource('/status', StatusController::class);
         Route::apiResource('/trashed', TrashedTodoController::class, ['except' => ['store']]);
         Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
+    });
+
+    Route::post('/test', function () {
+
+
+
     });
 });
 
