@@ -81,9 +81,9 @@ class Todo extends Model
     // }
 
     // * Dynamic 
-    public function scopeTitle($query, $value){
-        return $query->where('title', $value);
-    }
+    // public function scopeTitle($query, $value){
+    //     return $query->where('title', $value);
+    // }
     
 
     // * ==============================

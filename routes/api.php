@@ -10,9 +10,12 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\TrashedTodoController;
 use App\Services\TestService;
 use Spatie\Permission\Contracts\Permission;
+
+use App\Http\Traits\TodoTrait;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,10 +54,6 @@ Route::group([], function () {
         Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
     });
 
-    Route::post('/test', function () {
-
-
-
-    });
+    Route::post('/test', TestController::class);
 });
 
