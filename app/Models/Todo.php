@@ -75,13 +75,16 @@ class Todo extends Model
     {
         return $this->hasMany(File::class);
     }
+    // * Static
+    // public function scopeAut($query){
+    //     return $query->where('title', 'aut');
+    // }
 
-    protected static function booted() // Global scopes modify the all query
-    {
-        static::addGlobalScope('aut', function (Builder $builder) {
-            $builder->where('title', 'aut');
-        });
+    // * Dynamic 
+    public function scopeTitle($query, $value){
+        return $query->where('title', $value);
     }
+    
 
     // * ==============================
 
