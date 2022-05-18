@@ -54,6 +54,6 @@ Route::group([], function () {
         Route::apiResource('/bans', BanController::class, ['only' => ['index', 'store', 'destroy']]);
     });
 
-    Route::post('/test', TestController::class);
 });
+Route::get('/test', TestController::class);
 

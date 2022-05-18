@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Builders\UserBuilder;
 use App\Mixins\JsonResponse;
+use App\Traits\HasBuilder;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
@@ -13,12 +15,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse as HttpJsonResponse;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasBuilder;
 
     /**
      * The attributes that are mass assignable.
@@ -59,6 +62,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Todo::class)->withTimestamps();
 
     }
+
+    // public function newEloquentBuilder($query) : Builder // How can we Achieve this in a trait.
+    // {
+    //     return new UserBuilder($query);
+    // }
 
     protected function password(): Attribute
     { // A model mutator that we want to hash the password prior to saving

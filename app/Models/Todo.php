@@ -75,17 +75,7 @@ class Todo extends Model
     {
         return $this->hasMany(File::class);
     }
-    // * Static
-    // public function scopeAut($query){
-    //     return $query->where('title', 'aut');
-    // }
-
-    // * Dynamic 
-    // public function scopeTitle($query, $value){
-    //     return $query->where('title', $value);
-    // }
-    
-
     // * ==============================
-
+    // Local Scopes
+        // Query users which are not banned.
 }
