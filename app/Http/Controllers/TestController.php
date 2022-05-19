@@ -15,12 +15,6 @@ class TestController extends Controller
      */
     public function __invoke(Request $request)
     {
-        // Banned
-            // $BannedUserList = User::banned()->get(['id', 'email']);
-        
-        // Active
-        $activeUsers = User::active()->get(['id', 'email']);
 
-        return response()->json($activeUsers);
     }
 }
