@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Pipeline\Pipeline;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Todo extends Model
 {
-    use HasApiTokens, HasFactory, SoftDeletes, HasRecursiveRelationships;
+    use HasApiTokens, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',

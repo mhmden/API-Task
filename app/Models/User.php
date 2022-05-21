@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Builders\UserBuilder;
 use App\Mixins\JsonResponse;
-use App\Traits\HasBuilder;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
@@ -21,7 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasBuilder;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
