@@ -41,7 +41,7 @@ Route::controller(AuthController::class)->group(function () {
  */
 // Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::group([], function () {
-    Route::group(['middleware' => 'role:user|active'], function () {
+    Route::group([], function () {
         Route::apiResources([
             '/todos' => TodoController::class,
             '/tags' => TagController::class,

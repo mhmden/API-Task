@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\TestNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class TestController extends Controller
 {
@@ -15,6 +17,6 @@ class TestController extends Controller
      */
     public function __invoke(Request $request)
     {
-        // Code Goes here
+        Notification::route('mail', 'hello@example.com')->notify(new TestNotification());
     }
 }
