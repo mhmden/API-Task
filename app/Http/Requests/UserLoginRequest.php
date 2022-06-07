@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserLoginRequest extends FormRequest
@@ -23,8 +24,9 @@ class UserLoginRequest extends FormRequest
      */
     public function rules()
     {
+        $isEmail = filter_var($this->login, FILTER_VALIDATE_EMAIL);
         return [
-            'email' => 'required|string|email|max:255',
+            'login' => ['required','string', Rule::when($isEmail, ['email:rfc,dns'])],
             'password' => 'required|string|min:8|max:64',
         ];
     }

@@ -14,7 +14,6 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Notifications\PasswordResetNotification;
 
 
-
 class AuthController extends Controller
 {
     public function register(UserRegisterRequest $request)
@@ -27,7 +26,8 @@ class AuthController extends Controller
 
     public function login(UserLoginRequest $request) // Validation Rule are in fact bette
     {
-        $user = User::firstWhere('email', $request->validated('email'));
+        $field = filter_var($request->validated('login'), FILTER_VALIDATE_EMAIL) ? 'email': 'username';
+        $user = User::firstWhere($field, $request->validated('login'));
         if (
             !$user ||
             !Hash::check($request->validated('password'), $user->password) ||
